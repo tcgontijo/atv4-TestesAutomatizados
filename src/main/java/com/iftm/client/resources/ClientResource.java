@@ -1,10 +1,6 @@
 package com.iftm.client.resources;
 
 import java.net.URI;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,17 +38,6 @@ public class ClientResource {
 		return ResponseEntity.ok().body(list);
 	}
 
-	@GetMapping(value = "/find-by-name")
-	public ResponseEntity<Page<ClientDTO>> findByName(@RequestParam(value = "page", defaultValue = "0") Integer page,
-			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
-			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-			@RequestParam(value = "name", defaultValue = "") String name) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		Page<ClientDTO> list = service.findByName(name, pageRequest);
-		return ResponseEntity.ok().body(list);
-	}
-
 	@GetMapping(value = "/find-by-income")
 	public ResponseEntity<Page<ClientDTO>> findByIncome(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
@@ -62,45 +47,6 @@ public class ClientResource {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<ClientDTO> list = service.findByIncome(income, pageRequest);
 		return ResponseEntity.ok().body(list);
-	}
-
-	@GetMapping(value = "/find-by-birth-year")
-	public ResponseEntity<Page<ClientDTO>> findByYearOfBirthDate(
-			@RequestParam(value = "page", defaultValue = "0") Integer page,
-			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
-			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-			@RequestParam(value = "year", defaultValue = "") Integer birthDateYear) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		if (birthDateYear == null) {
-			Page<ClientDTO> list = service.findAllPaged(pageRequest);
-			return ResponseEntity.ok().body(list);
-		} else {
-			Page<ClientDTO> list = service.findByYearOfBirthDate(birthDateYear, pageRequest);
-			return ResponseEntity.ok().body(list);
-		}
-
-	}
-	
-	@GetMapping(value = "/find-by-birth-date-after")
-	public ResponseEntity<Page<ClientDTO>> findByBirthDateYearAfter(
-			@RequestParam(value = "page", defaultValue = "0") Integer page,
-			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
-			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-			@RequestParam(value = "year", defaultValue = "") String birthDateYear) throws ParseException {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		if (birthDateYear == null) {
-			Page<ClientDTO> list = service.findAllPaged(pageRequest);
-			return ResponseEntity.ok().body(list);
-		} else {
-			String bD1 = "01/01/" + birthDateYear;
-			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(bD1);
-			Instant bD2 = date.toInstant();
-			Page<ClientDTO> list = service.findByBirthDateAfter(bD2, pageRequest);
-			return ResponseEntity.ok().body(list);
-		}
-
 	}
 
 	@GetMapping(value = "/{id}")
